@@ -2,7 +2,7 @@
 # Run with: bash test.sh
 set -uo pipefail
 
-RED='\033[0;31m'; GREEN='\033[0;32m'; BOLD='\033[1m'; NC='\033[0m'
+RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; BOLD=$'\033[1m'; NC=$'\033[0m'
 PASS=0; FAIL=0
 PORT=18080
 BASE="http://127.0.0.1:${PORT}"
@@ -50,13 +50,13 @@ PYEOF
     return 1
 }
 
-stop_server() { [[ -n "$SERVER_PID" ]] && kill "$SERVER_PID" 2>/dev/null || true; }
+stop_server() { if [[ -n "$SERVER_PID" ]]; then kill "$SERVER_PID" 2>/dev/null; fi; }
 trap stop_server EXIT
 
 # --- Assertion helpers --------------------------------------------------------
 
-pass() { printf "${GREEN}PASS${NC} %s\n" "$1"; PASS=$((PASS + 1)); }
-fail() { printf "${RED}FAIL${NC} %s\n     %s\n" "$1" "$2"; FAIL=$((FAIL + 1)); }
+pass() { printf '%sPASS%s %s\n' "$GREEN" "$NC" "$1"; PASS=$((PASS + 1)); }
+fail() { printf '%sFAIL%s %s\n     %s\n' "$RED" "$NC" "$1" "$2"; FAIL=$((FAIL + 1)); }
 
 assert_contains() {
     local desc="$1" needle="$2" hay="$3"
@@ -78,11 +78,11 @@ assert_rc_nonzero() {
 
 # --- Setup -------------------------------------------------------------------
 
-# shellcheck source=../burll.sh
+# shellcheck disable=SC1091
 source "$(dirname "$0")/../burll.sh"
 start_server
 
-printf "\n${BOLD}=== burl tests ===${NC}\n\n"
+printf '\n%s=== burl tests ===%s\n\n' "$BOLD" "$NC"
 
 # --- Tests -------------------------------------------------------------------
 
@@ -143,10 +143,10 @@ assert_contains "multi-segment path sent correctly" '"/actuator/health"' "$out"
 
 # --- Summary -----------------------------------------------------------------
 
-printf "\n${BOLD}Results: ${GREEN}${PASS} passed${NC}${BOLD}, "
+printf '\n%sResults: %s%s passed%s%s, ' "$BOLD" "$GREEN" "$PASS" "$NC" "$BOLD"
 if [[ "$FAIL" -gt 0 ]]; then
-    printf "${RED}${FAIL} failed${NC}\n"
+    printf '%s%s failed%s\n' "$RED" "$FAIL" "$NC"
     exit 1
 else
-    printf "${GREEN}0 failed${NC}\n"
+    printf '%s0 failed%s\n' "$GREEN" "$NC"
 fi

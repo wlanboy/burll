@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Lint with shellcheck
-        run: shellcheck burll.sh test/test.sh
+        run: shellcheck -x burll.sh test/test.sh
 
   test:
     name: test

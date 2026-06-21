@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # burl - curl-like HTTP client using bash /dev/tcp (no external tools for HTTP)
 # Source this file, then use burl like curl:
 #   source burll.sh
